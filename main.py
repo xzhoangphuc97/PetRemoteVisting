@@ -1,10 +1,7 @@
-from controlBrightness import setbrightness
-from sound import Sound
-from screenSaver import runScreensaver
-import MQTT_light
+import sub_wss
+def run():
+  sub_wss.run()
 
-MQTT_light.run()
-
-# runScreensaver()
-# setbrightness(100)
-# Sound.volume_set(70)
+if __name__ == "__main__":
+  print("Version: 1.0")
+  run()
