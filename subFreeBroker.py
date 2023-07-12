@@ -4,20 +4,20 @@ import logging
 import random
 import time
 import json
-import ssl
+
 from paho.mqtt import client as mqtt_client
 from controlMain import controlMain
-import screen_brightness_control as sbc
 
-BROKER = 'cmengineering.org'
-PORT = 8883
+
+BROKER = 'broker.emqx.io'
+PORT = 8084
 TOPIC1 = "devc_control_vol"
 TOPIC2 = "devc_control_bright"
-TOPIC3 = "meeting_yyyy"
+TOPIC3 = "meeting_0001"
 # generate client ID with pub prefix randomly
 CLIENT_ID = f'python-mqtt-wss-sub-{random.randint(0, 1000)}'
-clientCert = './cert/cert.pem'
-clientKey = './cert/privkey.pem'
+USERNAME = 'emqx'
+PASSWORD = 'public'
 
 FIRST_RECONNECT_DELAY = 1
 RECONNECT_RATE = 2
@@ -68,9 +68,9 @@ def on_message(client, userdata, msg):
         controlMain(msg.topic,data['value'])
 
 def connect_mqtt():
-    client = mqtt_client.Client(protocol=mqtt_client.MQTTv311)
-    client.tls_set(certfile = clientCert,keyfile = clientKey,tls_version = ssl.PROTOCOL_TLSv1_2)
-    client.tls_insecure_set(True)
+    client = mqtt_client.Client(CLIENT_ID, transport='websockets')
+    client.tls_set(ca_certs='./broker.emqx.io-ca.crt')
+    client.username_pw_set(USERNAME, PASSWORD)
     client.on_connect = on_connect
     client.on_message = on_message
     client.connect(BROKER, PORT, keepalive=3)
