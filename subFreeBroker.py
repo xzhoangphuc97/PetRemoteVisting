@@ -7,13 +7,13 @@ import json
 
 from paho.mqtt import client as mqtt_client
 from controlMain import controlMain
+import parameter
 
-
-BROKER = 'broker.emqx.io'
-PORT = 8084
-TOPIC1 = "devc_control_vol"
-TOPIC2 = "devc_control_bright"
-TOPIC3 = "meeting_0001"
+BROKER = parameter.BROKER
+PORT = parameter.PORT
+TOPIC1 =  parameter.TOPIC1
+TOPIC2 =  parameter.TOPIC2
+TOPIC3 =  parameter.TOPIC3
 # generate client ID with pub prefix randomly
 CLIENT_ID = f'python-mqtt-wss-sub-{random.randint(0, 1000)}'
 USERNAME = 'emqx'
@@ -60,7 +60,7 @@ def on_disconnect(client, userdata, rc):
 
 
 def on_message(client, userdata, msg):
-    # print(f'Received `{msg.payload.decode()}` from `{msg.topic}` topic')
+    print(f'Received `{msg.payload.decode()}` from `{msg.topic}` topic')
     data = json.loads(msg.payload.decode())
     if(msg.topic == TOPIC3):
         controlMain(msg.topic, data['Meeting'])
